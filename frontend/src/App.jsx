@@ -14,6 +14,8 @@ export default function App() {
     const [allUsers, setAllUsers] = useState([]);
     const [projects, setProjects] = useState([]);
     
+    const [currentProject, setCurrentProject] = useState(null);
+    
     useEffect(() => {
         fetch('/api/users')
             .then(res => res.json())
@@ -22,7 +24,12 @@ export default function App() {
         
         fetch('/api/projects')
             .then(res => res.json())
-            .then(data => setProjects(data))
+            .then(data => {
+                setProjects(data);
+                if(data.length > 0 && !currentProject){
+                    setCurrentProject(data[0]);
+                }
+            })
             .catch(err => console.error('Error fetching projects:', err));
     }, [user]);
 
@@ -36,6 +43,11 @@ export default function App() {
         setCurrentView('projects');
         setAllUsers([]);
         setProjects([]);
+    };
+
+    const handleOpenBacklog = (project) => {
+        setCurrentProject(project);
+        setCurrentView('backlog');
     };
 
     if (!user) {
@@ -113,12 +125,20 @@ export default function App() {
             </header>
 
             <main className="app-content">
-                {currentView === 'projects' && <ProjectList projects={projects} />}
                 {currentView === 'create' && (
                     <CreateProject users={allUsers} onProjectCreated={handleProjectCreated} />
                 )}
                 {currentView === 'members' && (
                     <ProjectManager projects={projects} allUsers={allUsers} />
+                )}
+                {currentView === 'projects' && (
+                    <ProjectList
+                        projects={projects}
+                        onOpenBacklog={(project) => {
+                            setCurrentProject(project);
+                            setCurrentView('backlog');
+                        }}
+                    />
                 )}
             </main>
         </div>

@@ -3,6 +3,7 @@ const router = express.Router();
 import Project from '../models/Project.js';
 import ProjectMembership from '../models/ProjectMembership.js';
 import User from '../models/User.js';
+import UserStory from '../models/UserStory.js';
 router.post('/', async (req, res) => {
     try {
         const { name, description, status, project_lead_id } = req.body;
@@ -59,6 +60,21 @@ router.get('/:id/members', async (req, res) => {
     }
 });
 
+router.get('/projects/:project_id/members', async (req, res) => {
+    try{
+        const {project_id} = req.params;
+        const project = await Project.findById(project_id);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found.' });
+        }
+        const memberships = await ProjectMembership.find({project_id: project_id}).populate('user_id', 'f_name l_name username');
+        let members = memberships.map(m => m.user_id).filter(Boolean);
+        res.status(200).json(members);
+    }catch(err){
+        res.status(500).json({ message: 'Failed to fetch project members.', details: err.message });
+    }
+});
+
 router.post('/:id/members', async (req, res) => {
     try {
         const project_id = req.params.id;
@@ -93,6 +109,15 @@ router.post('/:id/members', async (req, res) => {
 router.delete('/:project_id/members/:user_id', async (req, res) => {
     try {
         const { project_id, user_id } = req.params;
+        const assignedStoriesCount = await UserStory.countDocuments({
+            project_id: project_id,
+            user_id: user_id
+        });
+        if(assignedStoriesCount > 0){
+            return res.status(400).json({ 
+                message: 'Cannot remove user.', 
+                details: 'User is still assigned to ${assignedStoriesCount} stories. Please reassign or remove their stories before removing them.}' });
+        }
         const project = await Project.findById(project_id);
         if (!project) {
             return res.status(404).json({ message: 'The requested project does not exist.' });

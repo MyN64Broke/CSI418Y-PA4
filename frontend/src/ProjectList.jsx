@@ -1,10 +1,11 @@
 ﻿import React, { useState, useEffect } from 'react';
 
-function ProjectList() {
+// 1. Accept `onOpenBacklog` as a prop
+function ProjectList({ onOpenBacklog }) {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     useEffect(() => {
         fetch('/api/projects')
             .then((res) => {
@@ -55,22 +56,44 @@ function ProjectList() {
                                     border: '1px solid #ccc',
                                     borderRadius: '8px',
                                     padding: '15px',
-                                    backgroundColor: '#f9f9f9'
+                                    backgroundColor: '#f9f9f9',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
                                 }}
                             >
-                                <h3>{project.name}</h3>
-                                <p><strong>Description:</strong> {project.description}</p>
-                                <p>
-                                    <strong>Status:</strong>{' '}
-                                    <span style={{
-                                        padding: '3px 8px',
+                                <div>
+                                    <h3 style={{ margin: '0 0 5px 0' }}>{project.name}</h3>
+                                    <p style={{ margin: '0 0 5px 0' }}><strong>Description:</strong> {project.description}</p>
+                                    <p style={{ margin: '0 0 5px 0' }}>
+                                        <strong>Status:</strong>{' '}
+                                        <span style={{
+                                            padding: '3px 8px',
+                                            borderRadius: '4px',
+                                            backgroundColor: project.status === 'Active' ? '#d4edda' : project.status === 'Completed' ? '#cce5ff' : '#fff3cd'
+                                        }}>
+                                            {project.status}
+                                        </span>
+                                    </p>
+                                    <p style={{ margin: 0 }}><strong>Project Lead:</strong> {leadName}</p>
+                                </div>
+
+                                {/* 2. Add the button to open the backlog for this specific project */}
+                                <button
+                                    onClick={() => onOpenBacklog(project)}
+                                    style={{
+                                        backgroundColor: '#3498db',
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '8px 14px',
                                         borderRadius: '4px',
-                                        backgroundColor: project.status === 'Active' ? '#d4edda' : project.status === 'Completed' ? '#cce5ff' : '#fff3cd'
-                                    }}>
-                    {project.status}
-                  </span>
-                                </p>
-                                <p><strong>Project Lead:</strong> {leadName}</p>
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        height: 'fit-content'
+                                    }}
+                                >
+                                    View Backlog
+                                </button>
                             </div>
                         );
                     })}
