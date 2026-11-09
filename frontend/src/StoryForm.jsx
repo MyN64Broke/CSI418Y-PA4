@@ -83,7 +83,7 @@ export default function StoryForm({project_id, story, onClose, onSave}){
                         const u = member.user_id || member;
 
                         const displayName = (u.f_name || u.l_name)
-                            ? `${u.f_name || ''} ${u.l_name || ''}`.trim()
+                            ? `${u.f_name || ''} ${u.l_name || ''} ${u.username ? `(${u.username})` : ''}`.trim()
                             : 'Unnamed User';
                         
                         const userId = u._id || member._id;

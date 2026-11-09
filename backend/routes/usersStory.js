@@ -8,7 +8,7 @@ router.get('/:project_id/stories', async (req, res) => {
     try {
         const { project_id } = req.params;
         const stories = await UserStory.find({ project_id })
-            .populate('assigned_user_id', 'f_name l_name');
+            .populate('assigned_user_id', 'f_name l_name username');
 
         res.status(200).json(stories);
     } catch (err) {

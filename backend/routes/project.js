@@ -109,11 +109,15 @@ router.post('/:id/members', async (req, res) => {
 router.delete('/:project_id/members/:user_id', async (req, res) => {
     try {
         const { project_id, user_id } = req.params;
+        console.log(user_id);
+        console.log(project_id);
         const assignedStoriesCount = await UserStory.countDocuments({
             project_id: project_id,
-            user_id: user_id
+            assigned_user_id: user_id
         });
+        console.log(assignedStoriesCount);
         if(assignedStoriesCount > 0){
+            console.log('test');
             return res.status(400).json({ 
                 message: 'Cannot remove user.', 
                 details: 'User is still assigned to ${assignedStoriesCount} stories. Please reassign or remove their stories before removing them.}' });

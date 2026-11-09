@@ -2,8 +2,8 @@
 
 export default function StoryCard({ story, onEdit, onDelete }) {
     const assigneeName = story.assigned_user_id && typeof story.assigned_user_id === 'object'
-        ? `${story.assigned_user_id.f_name || ''} ${story.assigned_user_id.l_name || ''}`.trim() || 'Assigned'
-    : 'Unassigned';
+        ? `${story.assigned_user_id.f_name || ''} ${story.assigned_user_id.l_name || ''} ${story.assigned_user_id.username ? `(${story.assigned_user_id.username})` : ''}`.trim() || 'Assigned'
+        : 'Unassigned';
     return (
         <div className="story-card card">
             <div className="story-header">
