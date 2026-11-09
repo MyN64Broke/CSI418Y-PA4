@@ -74,8 +74,9 @@ router.put('/:project_id/stories/:id', async (req, res) => {
         if(priority) story.priority = priority;
         if(status) story.status = status;
           
-        const updatedStory = await story.save();
-        return res.status(200).json(updatedStory);
+        await story.save();
+        const populatedStory = await UserStory.findById(story._id).populate('assigned_user_id', 'f_name l_name');
+        return res.status(200).json(populatedStory);
     } catch(err){
         return res.status(400).json({error: 'Failed to update story.', details: err.message});
     }
