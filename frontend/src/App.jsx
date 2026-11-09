@@ -4,6 +4,7 @@ import Login from './Login';
 import CreateProject from "./CreateProject";
 import ProjectList from './ProjectList';
 import ProjectManager from './ProjectManager';
+import ProjectBacklog from './ProjectBacklog';
 import './App.css';
 
 export default function App() {
@@ -81,7 +82,7 @@ export default function App() {
     return (
         <div className="App">
             <header className="app-header">
-                <h1>Software Engineering Project Manager (PA3)</h1>
+                <h1>Software Engineering Project Manager (PA4)</h1>
 
                 {/* Navigation and Sign Out Container */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px' }}>
@@ -139,6 +140,9 @@ export default function App() {
                             setCurrentView('backlog');
                         }}
                     />
+                )}
+                {currentView === 'backlog' && (
+                    <ProjectBacklog currentProject={currentProject} />
                 )}
             </main>
         </div>

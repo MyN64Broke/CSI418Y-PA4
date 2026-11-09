@@ -4,7 +4,7 @@ export default function StoryForm({project_id, story, onClose, onSave}){
     const[title,setTitle] = useState(story ? story.title : '');
     const[description,setDescription] = useState(story ? story.description : '');
     const[priority, setPriority] = useState(story ? story.priority : 'Medium');
-    const[status, setStatus] = useState(story ? story.status : 'TO DO ');
+    const[status, setStatus] = useState(story ? story.status : 'To-Do');
     const[assignedUserId, setAssignedUserId] = useState(story?.assigned_user_id?._id || story?.assigned_user_id || '');
     
     const[projectMembership, setProjectMembership] = useState([]);
@@ -14,7 +14,7 @@ export default function StoryForm({project_id, story, onClose, onSave}){
             try{
                 const res = await fetch(`/api/projects/${project_id}/members`);
                 const data = await res.json();
-                setProjectMembers(data);
+                setProjectMembership(data);
             }catch(err){
                 console.error('Failed to fetch project members', err);
             }
@@ -32,9 +32,9 @@ export default function StoryForm({project_id, story, onClose, onSave}){
             status: status,
             assigned_user_id: assignedUserId === '' ? null : assignedUserId
         };
-        
-        const url = story ? `/api/stories/${story_id}` : '/api/stories';
-        const method = story ? 'POST' : 'PUT';
+
+        const url = story ? `/api/projects/${project_id}/stories/${story._id}` : `/api/projects/${project_id}/stories`;
+        const method = story ? 'PUT' : 'POST';
         
         try{
             const res = await fetch(url, {
@@ -71,7 +71,7 @@ export default function StoryForm({project_id, story, onClose, onSave}){
 
                 <label>Status:</label>
                 <select value={status} onChange={e => setStatus(e.target.value)}>
-                    <option value="To Do">To Do</option>
+                    <option value="To-Do">To-Do</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Done">Done</option>
                 </select>
@@ -79,11 +79,21 @@ export default function StoryForm({project_id, story, onClose, onSave}){
                 <label>Assignee:</label>
                 <select value={assignedUserId} onChange={e => setAssignedUserId(e.target.value)}>
                     <option value="">Unassigned</option>
-                    {projectMembers.map(member => (
-                        <option key={member._id} value={member._id}>
-                            {member.name || member.username}
-                        </option>
-                    ))}
+                    {projectMembership.map(member => {
+                        const u = member.user_id || member;
+
+                        const displayName = (u.f_name || u.l_name)
+                            ? `${u.f_name || ''} ${u.l_name || ''}`.trim()
+                            : 'Unnamed User';
+                        
+                        const userId = u._id || member._id;
+
+                        return (
+                            <option key={member._id} value={userId}>
+                                {displayName}
+                            </option>
+                        );
+                    })}
                 </select>
 
                 <div className="form-actions">

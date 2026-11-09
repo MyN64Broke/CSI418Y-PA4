@@ -14,6 +14,8 @@ import projectRoutes from './routes/project.js';
 app.use('/api/projects', projectRoutes);
 import userRoutes from './routes/users.js';
 app.use('/api/users', userRoutes);
+import userStoriesRouter from './routes/usersStory.js';
+app.use('/api/projects', userStoriesRouter);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected successfully'))

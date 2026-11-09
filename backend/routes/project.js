@@ -71,7 +71,7 @@ router.get('/projects/:project_id/members', async (req, res) => {
         let members = memberships.map(m => m.user_id).filter(Boolean);
         res.status(200).json(members);
     }catch(err){
-        res.status(500).json({ message: 'Failed to fetch project members.', details: err.message });
+        res.status(500).json({ message: 'Failed to fetch project members.', deta: err});
     }
 });
 

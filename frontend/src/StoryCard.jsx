@@ -1,8 +1,9 @@
 ﻿import React from 'react';
 
 export default function StoryCard({ story, onEdit, onDelete }) {
-    const assigneeName = story.assigned_user_id ? story.assigned_user_id.name || story.assigned_user_id.username : 'Unassigned';
-
+    const assigneeName = story.assigned_user_id && typeof story.assigned_user_id === 'object'
+        ? `${story.assigned_user_id.f_name || ''} ${story.assigned_user_id.l_name || ''}`.trim() || 'Assigned'
+    : 'Unassigned';
     return (
         <div className="story-card card">
             <div className="story-header">

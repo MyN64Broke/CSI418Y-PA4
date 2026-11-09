@@ -1,7 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 
-// 1. Accept `onOpenBacklog` as a prop
-function ProjectList({ onOpenBacklog }) {
+function ProjectList({onOpenBacklog }) {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -78,7 +77,7 @@ function ProjectList({ onOpenBacklog }) {
                                     <p style={{ margin: 0 }}><strong>Project Lead:</strong> {leadName}</p>
                                 </div>
 
-                                {/* 2. Add the button to open the backlog for this specific project */}
+                                
                                 <button
                                     onClick={() => onOpenBacklog(project)}
                                     style={{

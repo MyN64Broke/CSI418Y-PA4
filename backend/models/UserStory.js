@@ -18,5 +18,5 @@ const ProjectSchema = new mongoose.Schema({
     },
     assigned_user_id: {type: mongoose.Schema.Types.ObjectId, ref: "User", default: null}
 })
-export default class UserStory {
-}
+const UserStory = mongoose.model('UserStory', ProjectSchema);
+export default UserStory;
